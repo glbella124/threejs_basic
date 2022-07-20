@@ -16,5 +16,11 @@
   "bugs": {
     "url": "https://github.com/glbella124/threejs_basic/issues"
   },
-  "homepage": "https://github.com/glbella124/threejs_basic#readme"
+  "homepage": "https://github.com/glbella124/threejs_basic#readme",
+  "dependencies": {
+    "dat.gui": "^0.7.9",
+    "gsap": "^3.10.4",
+    "parcel-bundler": "^1.12.5",
+    "three": "^0.141.0"
+  }
 }
