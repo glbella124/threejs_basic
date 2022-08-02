@@ -1,8 +1,14 @@
 [TOC]
 
+## 1. Parcel
+
+```
+npm install parcel-bundler --save-dev
+```
 
 
-## 1. Three.js入门
+
+## 2. Three.js入门
 
 ### GSAP 组件动画
 
@@ -70,7 +76,7 @@ const camera = new THREE.PerspectiveCamera(
 )
 ```
 
-## 2. 全面认识threejs物体
+## 3. 全面认识threejs物体
 
 
 
