@@ -41352,34 +41352,83 @@ function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && 
 
 // 导入轨道控制器
 // 用于鼠标移动镜头
-// BufferGeometry
-// 三角面片动画
+// 纹理加载进度情况 - 事件
 var scene = new THREE.Scene();
-var camera = new THREE.PerspectiveCamera(75, window.innerHeight / window.innerHeight, 0.1, 1000);
+var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 camera.position.set(0, 0, 10);
 scene.add(camera);
+var event = {}; // 单张纹理图的加载
 
-for (var i = 0; i < 50; i++) {
-  // 每个三角形需要三个顶点，每个顶点需要三个值
-  var geometry = new THREE.BufferGeometry();
-  var position = new Float32Array(9);
+event.onLoad = function () {
+  console.log("图片加载完成");
+};
 
-  for (var j = 0; j < 9; j++) {
-    position[j] = Math.random() * 10 - 5;
-  }
+event.onProgress = function (e) {
+  console.log(e);
+  console.log("图片加载中。。。");
+};
 
-  geometry.setAttribute("position", new THREE.BufferAttribute(position, 3));
-  var color = new THREE.Color(Math.random(), Math.random(), Math.random());
-  var material = new THREE.MeshBasicMaterial({
-    color: color,
-    transparent: true,
-    opacity: 0.7
-  });
-  var mesh = new THREE.Mesh(geometry, material);
-  console.log(mesh);
-  scene.add(mesh);
-} // 初始化渲染器
+event.onError = function (e) {
+  console.log(e);
+  console.log("图片加载出现错误");
+}; // 导入纹理
 
+
+var textLoader = new THREE.TextureLoader();
+var doorColorTexture = textLoader.load("./textures/door/color.jpg", event.onLoad, event.onProgress, event.onError); // .alphaMap : Texture
+// alpha贴图是一张灰度纹理，用于控制整个表面的不透明度。
+// （黑色：完全透明；白色：完全不透明）。 默认值为null。
+
+var doorAlphaTexture = textLoader.load("./textures/door/alpha.jpg");
+var doorAoTexture = textLoader.load("./textures/door/ambientOcclusion.jpg"); // 导入置换贴图
+
+var doorHeightTexture = textLoader.load("./textures/door/height.jpg"); // 导入粗糙度贴图
+
+var doorRoughTexture = textLoader.load("./textures/door/roughness.jpg"); // 导入金属贴图
+
+var doorMetalTexture = textLoader.load("./textures/door/metalness.jpg"); // 导入发现贴图
+
+var normalTexture = textLoader.load("./textures/door/normal.jpg");
+var cubeGeomeotry = new THREE.BoxBufferGeometry(1, 1, 1, 100, 100, 100); // 标准材质
+
+var material = new THREE.MeshStandardMaterial({
+  color: "#ffff00",
+  // 颜色贴图
+  map: doorColorTexture,
+  alphaMap: doorAlphaTexture,
+  transparent: true,
+  aoMap: doorAoTexture,
+  aoMapIntensity: 1,
+  displacementMap: doorHeightTexture,
+  // 凸出程度，最大凸出5公分
+  displacementScale: 0.1,
+  // 粗糙度和粗糙度纹理二者相乘
+  roughness: 1,
+  roughnessMap: doorRoughTexture,
+  metalness: 1,
+  metalnessMap: doorMetalTexture,
+  // 法线贴图
+  normalMap: normalTexture
+});
+var cube = new THREE.Mesh(cubeGeomeotry, material);
+scene.add(cube); // 给cube添加第二组uv
+// 增强了立体感
+
+cubeGeomeotry.setAttribute("uv2", new THREE.BufferAttribute(cubeGeomeotry.attributes.uv.array, 2)); // 添加平面
+
+var planeGeometry = new THREE.PlaneBufferGeometry(1, 1, 200, 200);
+var plane = new THREE.Mesh(planeGeometry, material);
+plane.position.set(1.5, 0, 0);
+scene.add(plane); // 给平面设置第二组uv
+
+planeGeometry.setAttribute("uv2", new THREE.BufferAttribute(planeGeometry.attributes.uv.array, 2)); // 环境光 soft white light - 四面八方打过来的光
+
+var light = new THREE.AmbientLight(0xffffff, 0.4);
+scene.add(light); // 直线光源 - 平行光源
+
+var directionLight = new THREE.DirectionalLight(0xffffff, 0.9);
+directionLight.position.set(10, 10, 10);
+scene.add(directionLight); // 初始化渲染器
 
 var renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -41432,7 +41481,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50433" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52376" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

@@ -10,6 +10,8 @@ npm install parcel-bundler --save-dev
 
 ## 2. Three.js入门
 
+http://www.webgl3d.cn/threejs/docs/
+
 ### GSAP 组件动画
 
 ```
@@ -78,5 +80,55 @@ const camera = new THREE.PerspectiveCamera(
 
 ## 3. 全面认识threejs物体
 
+ConeGeometry
+
+https://threejs.org/docs/index.html?q=ConeGe#api/en/geometries/ConeGeometry
 
 
+
+创建缓冲区属性对象
+传进去顶点一维数组，每三个值作为一个坐标
+new THREE.BufferAttribute()
+
+
+
+## 4. 材质
+
+设置顶点越多性能消耗越大
+.magFiltetr
+当一个纹素覆盖大于一个像素
+.minFilter
+当一个纹素覆盖小于一个像素
+
+在纹理放大时，需要为任何像素查找的纹素的数量总是四个或更少; 然而，在缩小时，随着纹理多边形移动得更远，潜在地整个纹理可能落入单个像素中。这将需要阅读所有它的纹素和它们的值组合以正确地确定像素颜色，这是一个非常昂贵的操作。Mipmapping通过预先过滤纹理并将其以较小的尺寸存储到单个像素来避免这种情况。随着纹理表面移动得更远，应用的纹理切换到预过滤的较小尺寸。mipmap的不同大小被称为“级别”，级别0是最大的级别（最接近观看者），并且随着距离增加，对应要增加mipmap等级。
+
+
+
+uv贴图，决定顶点在什么位置
+
+
+
+geometry.attributes.uv
+决定顶点在uv贴图什么样的位置
+
+给平面创建第二组uv
+遮挡贴图，明暗效果比较好
+
+#### PBR渲染
+灯光属性
+直接照明，间接照明，直接高光，间接高光，阴影，环境光闭塞
+表面属性:
+基础色，法线，高光，粗糙度，金属度
+
+#### 间接漫反射
+来自环境中各个方向的光撞击表面后散落在各个方向
+因为计算昂贵
+引擎的全局照明解决方案通常会离线渲染，并被烘培成灯光地图
+
+#### 获取纹理贴图的网站
+
+https://www.poliigon.com/textures
+
+https://www.arroway-textures.ch/textures/
+
+Quixel Bridge 虚幻引擎软件
