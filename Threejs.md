@@ -132,3 +132,18 @@ https://www.poliigon.com/textures
 https://www.arroway-textures.ch/textures/
 
 Quixel Bridge 虚幻引擎软件
+
+## 5. HDR 
+
+HDR技术是一种改善动态对比度的技术，HDR就是高动态范围技术，如其名字一样，HDR技术增加了亮度范围，同时提升最亮和最暗画面的对比度，从而获得更广泛的色彩范围，除了明显改善灰阶，也带来了更黑或更白的颜色效果。这样用户就可以看到更多的细节
+
+
+
+## 6. 点光源聚光灯
+
+点光源 - 向四周发散灯光
+
+聚光灯 - 手电筒
+
+
+
