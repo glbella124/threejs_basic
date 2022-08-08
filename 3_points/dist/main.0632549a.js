@@ -44654,63 +44654,103 @@ function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && 
 // 导入轨道控制器
 // 用于鼠标移动镜头
 // 导入dat.gui
-// 特定形状的星系
+// 特定形状的星系 -- 臂旋星系
 var scene = new THREE.Scene(); // 更改参数值允许只看到下降
 
-var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 50 // 1000
+var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 30 // 1000
 );
-camera.position.set(0, 0, 40);
-scene.add(camera);
+var textureLoader = new THREE.TextureLoader();
+var particlesTexture = textureLoader.load("./textures/particles/1.png");
+camera.position.set(0, 0, 10);
+scene.add(camera); // 随机生成一条直线
+// 从中心到尾部渐变色
 
-function createPoints(url, size) {
-  // 粒子效果，参考三角面片
-  // 是面片、线或点几何体的有效表述
-  var particlesGeometry = new THREE.BufferGeometry();
-  var count = 5000; // 设置缓冲区数组
+var params = {
+  // 点多以后效果更好
+  count: 10000,
+  size: 0.1,
+  radius: 5,
+  branch: 9,
+  color: "#ff6030",
+  rotateScale: 0.3,
+  endColor: "#1b3984"
+};
+var geometry = null;
+var material = null;
+var points = null;
+var centerColor = new THREE.Color(params.color);
+var endColor = new THREE.Color(params.endColor);
 
-  var positions = new Float32Array(count * 3); // 设置粒子顶点颜色
+var generateGalaxy = function generateGalaxy() {
+  // 生成顶点
+  geometry = new THREE.BufferGeometry(); // 随机生成位置
 
-  var colors = new Float32Array(count * 3); // 设置顶点
+  var positions = new Float32Array(params.count * 3); // 设置顶点颜色
 
-  for (var i = 0; i < count * 3; i++) {
-    // positions[i] = Math.random() * 10 - 5;
-    positions[i] = (Math.random() - 0.5) * 100;
-    colors[i] = Math.random();
-  } // 利用 BufferAttribute，可以更高效的向GPU传递数据
-  // setAttribute - 为当前几何体设置一个attribute属性
-  // 在类的内部，有一个存储 .attributes 的 hashmap，
-  // 通过该 hashmap，遍历 attributes 的速度会更快。
+  var colors = new Float32Array(params.count * 3); // 循环生成顶点
 
+  for (var i = 0; i < params.count; i++) {
+    // 三个分支
+    // 求余决定在哪条分支上 - 决定角度
+    var branchAngel = i % params.branch * (2 * Math.PI / params.branch); // 效果1 - 当前点距离圆心的距离
+    // const distance = Math.random() * params.radius;
+    // 效果2 - 越往边沿越来越小- 范围(0,1)Math.pow(Math.random(), 3)
 
-  particlesGeometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
-  particlesGeometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
-  var pointsMaterial = new THREE.PointsMaterial();
-  pointsMaterial.size = size; // pointsMaterial.color.set(0xcc00ff);
+    var distance = Math.random() * params.radius * Math.pow(Math.random(), 3);
+    var current = i * 3; // 效果1：使得点随机散开
+    // 三次方 - 中间聚拢，两边分散的效果
+    // const randomX = Math.pow(Math.random() * 2 - 1, 3);
+    // const randomY = Math.pow(Math.random() * 2 - 1, 3);
+    // const randomZ = Math.pow(Math.random() * 2 - 1, 3);
+    // 效果2：和当前距离圆心的距离有关
+    // 距离越近随机范围越大 - 中间集中，两边分散,比效果1好些
+    // const randomX = Math.pow(Math.random() * 2 - 1, 3) * distance/5;
+    // const randomY = Math.pow(Math.random() * 2 - 1, 3) * distance/5;
+    // const randomZ = Math.pow(Math.random() * 2 - 1, 3) * distance/5;
+    // 效果3分布较为均匀
+    // const randomZ = Math.random();
+    // const randomX = Math.random();
+    // const randomY = Math.random();
+    // 效果4 - 由中间均匀分散到尾巴
 
-  pointsMaterial.color.set(0xfff000); // 相机深度衰减
+    var randomX = Math.pow(Math.random() * 2 - 1, 3) * (params.radius - distance) / 5;
+    var randomY = Math.pow(Math.random() * 2 - 1, 3) * (params.radius - distance) / 5;
+    var randomZ = Math.pow(Math.random() * 2 - 1, 3) * (params.radius - distance) / 5; // 当前点的位置 - 控制弯曲程度 params.rotateScale
 
-  pointsMaterial.sizeAttenuation = true; // 载入纹理
+    positions[current] = Math.cos(branchAngel + distance * params.rotateScale) * distance + randomX;
+    positions[current + 1] = 0 + randomY; // 控制弯曲的角度
 
-  var textureLoader = new THREE.TextureLoader();
-  var texture = textureLoader.load("./textures/particles/".concat(url)); // 设置点纹理
+    positions[current + 2] = Math.sin(branchAngel + distance * params.rotateScale) * distance + randomZ; // 混合颜色，形成渐变色
 
-  pointsMaterial.map = texture;
-  pointsMaterial.alphaMap = texture;
-  pointsMaterial.transparent = true; // 渲染此材质是否对深度缓冲区有任何影响
-  // 深度检测，物体被挡住以后不再计算
+    var mixColor = centerColor.clone();
+    mixColor.lerp(endColor, distance / params.radius);
+    colors[current] = mixColor.r;
+    colors[current + 1] = mixColor.g;
+    colors[current + 2] = mixColor.b;
+  }
 
-  pointsMaterial.depthWrite = false; // 叠加算法 - 物体重叠时效果增强
-
-  pointsMaterial.blending = THREE.AdditiveBlending; // 设置启动顶点颜色
-
-  pointsMaterial.vertexColors = true;
-  var points = new THREE.Points(particlesGeometry, pointsMaterial);
+  geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+  geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
+  material = new THREE.PointsMaterial({
+    // color: new THREE.Color(params.color),
+    size: params.size,
+    // 远近距离大小不一样 - 相机深度衰减
+    sizeAttenuation: true,
+    // 深度检测，物体被挡住以后不再计算
+    depthWrite: false,
+    // 效果叠加增强
+    blending: THREE.AdditiveBlending,
+    map: particlesTexture,
+    alphaMap: particlesTexture,
+    transparent: true,
+    // 顶点颜色
+    vertexColors: true
+  });
+  points = new THREE.Points(geometry, material);
   scene.add(points);
-  return points;
-}
+};
 
-var points1 = createPoints("snow.png", 0.7);
-var points2 = createPoints("5.png", 0.9); // 初始化渲染器
+generateGalaxy(); // 初始化渲染器
 
 var renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -44724,10 +44764,6 @@ scene.add(axesHelper);
 var clock = new THREE.Clock(); // 动画循环
 
 function render() {
-  var time = clock.getElapsedTime();
-  points1.rotation.x = time * 0.1;
-  points1.rotation.y = time * 0.05;
-  points2.rotation.x = time * 0.03;
   controls.update();
   renderer.render(scene, camera); // 下一帧执行函数
 
@@ -44737,6 +44773,7 @@ function render() {
 render(); // 监听画面变化，更新渲染页面
 
 window.addEventListener("resize", function () {
+  var time = clock.getElapsedTime();
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
@@ -44770,7 +44807,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "61715" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53869" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
