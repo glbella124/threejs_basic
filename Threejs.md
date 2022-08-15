@@ -148,3 +148,12 @@ HDR技术是一种改善动态对比度的技术，HDR就是高动态范围技�
 ## 7. 粒子特效
 
 https://kenney.nl/assets/particle-pack
+
+## 8. 三维物理引擎
+
+cannon-es
+
+https://pmndrs.github.io/cannon-es/
+
+碰撞监测
+
