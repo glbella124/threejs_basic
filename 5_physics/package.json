@@ -4,8 +4,16 @@
   "description": "physics engine",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "parcel src/index.html",
+    "build": "parcel src/index.html"
   },
   "author": "Bella",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "cannon-es": "^0.20.0",
+    "dat.gui": "^0.7.9",
+    "gsap": "^3.10.4",
+    "parcel-bundler": "^1.12.5",
+    "three": "^0.143.0"
+  }
 }
