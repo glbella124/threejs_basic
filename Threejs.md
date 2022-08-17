@@ -161,3 +161,56 @@ https://schteppe.github.io/cannon.js/docs/
 
 碰撞监测
 
+## 9. WEBGL
+
+### 简介
+
+(Web图形库)JavaScript API， 可在兼容的WebL浏览器中渲染高性能的交互式3D和2D图形，无需使用插件
+
+### 渲染管线
+
+Webgl的渲染依赖底层GPU的渲染能力，所以WEBGL渲染流程和GPU内部的渲染管线相符
+
+作用：
+
+将3D模型转换为二维图像
+
+![](E:\Bella\Study\threejs_basic\screenshot\1660635977455.jpg)
+
+![image-20220816154806192](E:\Bella\Study\threejs_basic\screenshot\image-20220816154806192.png)
+
+
+
+![image-20220816161647055](E:\Bella\Study\threejs_basic\screenshot\image-20220816161647055.png)
+
+### 图元
+
+描述各种图形元素的函数，描述几何元素的称为几何图元（点，线段或多边形）
+
+经过顶点着色器计算之后的坐标会被组装成**组合图元**
+
+1. 图元装配
+
+   将设置的顶点，颜色，纹理等内容组装成一个可渲染的多边形的过程
+
+2. 光栅化
+
+   通过图元装配生成的多边形，计算像素并填充，剔除不可见的部分，剪裁掉不在可视范围内的部分
+
+3. 剔除和剪裁
+
+### 片元着色器
+
+#### 片元 
+
+光栅化后，每一个像素点都包含了颜色，深度，纹理数据
+
+每个像素的颜色由片元着色器的 gl_FragColor提供
+
+![image-20220816194935902](E:\Bella\Study\threejs_basic\screenshot\image-20220816194935902.png)
+
+模板测试： 模拟观察者的观察行为，模拟如何看像素
+
+#### 生成三角形
+
+![image-20220817084047681](E:\Bella\Study\threejs_basic\screenshot\image-20220817084047681.png)

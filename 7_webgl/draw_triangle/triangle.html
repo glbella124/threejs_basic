@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>绘制三角形</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
+      canvas {
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+    <script>
+      // 获取canvas元素
+      let canvas = document.getElementById("canvas");
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      //   获取webgl绘图上下文
+      //   设置视口大小
+      let gl = canvas.getContext("webgl");
+      gl.viewport(0, 0, canvas.width, canvas.height);
+
+      //   创建顶点着色器
+      let vertexShader = gl.createShader(gl.VERTEX_SHADER);
+      // mat4 --- 四维矩阵
+      // varying变量是vertex和fragment shader之间做数据传递用的
+      gl.shaderSource(
+        vertexShader,
+        `attribute vec4 a_Position;
+         uniform mat4 u_Mat;
+         varying vec4 v_Color;
+      void main(){
+        gl_Position = u_Mat * a_Position;
+        v_Color = gl_Position;
+      }
+      `
+      );
+      //   编译顶点着色器
+      gl.compileShader(vertexShader);
+      //   创建片元着色器
+      let fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
+      //   创建片元着色器源码 glsl
+      // 数据传递 -- GPU估算精度
+      gl.shaderSource(
+        fragmentShader,
+        `
+        precision mediump float;
+        varying vec4 v_Color;
+    void main(){
+        gl_FragColor = v_Color;
+    }
+    `
+      );
+
+      //   编译片元着色器
+      gl.compileShader(fragmentShader);
+      // 创建程序连接顶点着色器和片元着色器
+      let program = gl.createProgram();
+      // 连接顶点着色器和片元着色器
+      gl.attachShader(program, vertexShader);
+      gl.attachShader(program, fragmentShader);
+      //   链接程序
+      gl.linkProgram(program);
+      //   use程序进行渲染
+      gl.useProgram(program);
+
+      //   创建顶点缓冲区对象
+      let vertexBuffer = gl.createBuffer();
+      // 绑定顶点缓冲区对象
+      gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+      // 向顶点缓冲区对象中写入数据
+      let vertices = new Float32Array([0.0, 0.5, -0.5, -0.5, 0.5, -0.5]);
+      //   gl.STATIC_DRAW表示数据不会改变，gl.DYNAMIC_DRAW表示数据会改变
+      gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
+      //   获取顶点着色器中a_Position变量的位置
+      let a_Position = gl.getAttribLocation(program, "a_Position");
+      // 将顶点缓冲区对象分配给a_Position变量
+      //   两个值作为一组数据传给a_Position
+      //   FLOAT -- 浮点数
+      //   告诉webgl如何解析顶点数据 0，0 -- 不跳跃
+      gl.vertexAttribPointer(a_Position, 2, gl.FLOAT, false, 0, 0);
+      //   启用顶点着色器中的a_Position变量
+      gl.enableVertexAttribArray(a_Position);
+
+      // 缩小放大矩阵
+      const scale = {
+        x: 1.5,
+        y: 1.5,
+        z: 1.5,
+      };
+
+      // const mat = new Float32Array([
+      //   scale.x,
+      //   0.0,
+      //   0.0,
+      //   0.0,
+      //   0.0,
+      //   scale.y,
+      //   0.0,
+      //   0.0,
+      //   0.0,
+      //   0.0,
+      //   scale.z,
+      //   0.0,
+      //   0.0,
+      //   0.0,
+      //   0.0,
+      //   1.0,
+      // ]);
+
+      // // 清除canvas
+      // gl.clearColor(0.0, 0.0, 0.0, 0.0);
+      // gl.clear(gl.COLOR_BUFFER_BIT);
+
+      function animate() {
+        scale.x -= 0.01;
+       
+        console.log(scale.x);
+        const mat = new Float32Array([
+          scale.x,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          scale.x,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          scale.x,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+        ]);
+
+        // 程序里的u_Mat -- uniform
+        const u_Mat = gl.getUniformLocation(program, "u_Mat");
+
+        // 获取着色器程序uniform
+        // false -- 是否为转置的矩阵
+        // mat -- 矩阵的数据
+        gl.uniformMatrix4fv(u_Mat, false, mat);
+        // 绘制三角形
+        gl.drawArrays(gl.TRIANGLES, 0, 3);
+        requestAnimationFrame(animate);
+      }
+
+      animate();
+    </script>
+  </body>
+</html>
