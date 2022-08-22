@@ -301,6 +301,7 @@ void main() {
     // gl_FragColor = vec4(mixColor,1.0);
 
     // 42 --------- 使用uv颜色混合
+
     // 蓝紫混合
     vec3 uvColor = vec3(vUv,1.0);
     // 红黄混合
