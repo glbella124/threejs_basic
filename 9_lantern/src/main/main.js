@@ -14,7 +14,7 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 // 制作孔明灯
 
 //创建gui对象
-const gui = new dat.GUI();
+// const gui = new dat.GUI();
 
 // console.log(THREE);
 // 初始化场景
@@ -75,7 +75,7 @@ renderer.toneMapping = THREE.ACESFilmicToneMapping;
 // renderer.toneMapping = THREE.LinearToneMapping
 // renderer.toneMapping  = THREE.ReinhardToneMapping
 // renderer.toneMapping  = THREE.CineonToneMapping
-renderer.toneMappingExposure = 0.2;
+renderer.toneMappingExposure = 0.1;
 
 let lantern = null;
 const gltfLoader = new GLTFLoader();

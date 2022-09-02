@@ -44655,13 +44655,15 @@ function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && 
 // 用于鼠标移动镜头
 // 导入dat.gui
 // 特定形状的星系 -- 臂旋星系
+//创建gui对象
+// const gui = new dat.GUI();
 var scene = new THREE.Scene(); // 更改参数值允许只看到下降
 
 var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 30 // 1000
 );
 var textureLoader = new THREE.TextureLoader();
 var particlesTexture = textureLoader.load("./textures/particles/1.png");
-camera.position.set(0, 0, 10);
+camera.position.set(0, 4, 4);
 scene.add(camera); // 随机生成一条直线
 // 从中心到尾部渐变色
 
@@ -44759,8 +44761,10 @@ renderer.physicallyCorrectLights = true;
 document.body.appendChild(renderer.domElement);
 var controls = new _OrbitControls.OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
-var axesHelper = new THREE.AxesHelper(5);
-scene.add(axesHelper);
+controls.autoRotate = true;
+controls.autoRotateSpeed = 0.9; // const axesHelper = new THREE.AxesHelper(5);
+// scene.add(axesHelper);
+
 var clock = new THREE.Clock(); // 动画循环
 
 function render() {
@@ -44807,7 +44811,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53869" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "58748" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

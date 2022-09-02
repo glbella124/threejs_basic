@@ -49817,7 +49817,7 @@ exports.default = _default;
 },{}],"shader/lantern/vertex.glsl":[function(require,module,exports) {
 module.exports = "precision lowp float;\n#define GLSLIFY 1\n\n// 传给片元着色器\n// 设置一个位置变量控制位置\nvarying vec4 vPosition;\n// 局部位置\nvarying vec4 gPosition;\nvoid main() {\n    vec4 modelPosition = modelMatrix * vec4(position, 1.0);\n    vPosition = modelPosition;\n    gPosition = vec4(position, 1.0);\n    gl_Position = projectionMatrix * viewMatrix * modelPosition;\n}";
 },{}],"shader/lantern/fragment.glsl":[function(require,module,exports) {
-module.exports = "precision lowp float;\n#define GLSLIFY 1\n\nvarying vec4 vPosition;\nvarying vec4 gPosition;\n\nvoid main() {\n    // 设置渐变色\n    vec4 redColor = vec4(1, 0, 0, 1);\n    vec4 yellowColor = vec4(1, 1, 0.5, 1);\n    vec4 mixColor = mix(yellowColor, redColor, gPosition.y / 3.0);\n\n     // 判断正面还是反面\n    if(gl_FrontFacing) {\n        // 飞的越高值越小\n        gl_FragColor = vec4(mixColor.xyz-(vPosition.y-20.0)/90.0-0.1, 1.0);\n    }else{\n        gl_FragColor = vec4(mixColor.xyz,1.0);\n    }\n}";
+module.exports = "precision lowp float;\n#define GLSLIFY 1\n\nvarying vec4 vPosition;\nvarying vec4 gPosition;\n\nvoid main() {\n    // 设置渐变色\n    vec4 redColor = vec4(0.87, 0.42, 0.51, 1);\n    vec4 yellowColor = vec4(0.78, 0.45, 0.97, 1);\n    vec4 mixColor = mix(yellowColor, redColor, gPosition.y / 3.0);\n\n     // 判断正面还是反面\n    if(gl_FrontFacing) {\n        // 飞的越高值越小\n        gl_FragColor = vec4(mixColor.xyz-(vPosition.y-20.0)/90.0-0.1, 1.0);\n    }else{\n        gl_FragColor = vec4(mixColor.xyz,1.0);\n    }\n}";
 },{}],"../node_modules/three/examples/jsm/loaders/RGBELoader.js":[function(require,module,exports) {
 "use strict";
 
@@ -53417,9 +53417,9 @@ function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && 
 // 片元着色器
 // 制作孔明灯
 //创建gui对象
-var gui = new dat.GUI(); // console.log(THREE);
+// const gui = new dat.GUI();
+// console.log(THREE);
 // 初始化场景
-
 var scene = new THREE.Scene(); // 创建透视相机
 
 var camera = new THREE.PerspectiveCamera(90, window.innerHeight / window.innerHeight, 0.1, 1000); // 设置相机位置
@@ -53467,7 +53467,7 @@ renderer.toneMapping = THREE.ACESFilmicToneMapping; // renderer.toneMapping = TH
 // renderer.toneMapping  = THREE.ReinhardToneMapping
 // renderer.toneMapping  = THREE.CineonToneMapping
 
-renderer.toneMappingExposure = 0.2;
+renderer.toneMappingExposure = 0.1;
 var lantern = null;
 var gltfLoader = new _GLTFLoader.GLTFLoader();
 gltfLoader.load("./assets/model/lantern.glb", function (gltf) {
@@ -53570,7 +53570,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "61502" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "59151" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

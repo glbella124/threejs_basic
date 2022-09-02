@@ -5,8 +5,8 @@ varying vec4 gPosition;
 
 void main() {
     // 设置渐变色
-    vec4 redColor = vec4(1, 0, 0, 1);
-    vec4 yellowColor = vec4(1, 1, 0.5, 1);
+    vec4 redColor = vec4(0.87, 0.42, 0.51, 1);
+    vec4 yellowColor = vec4(0.78, 0.45, 0.97, 1);
     vec4 mixColor = mix(yellowColor, redColor, gPosition.y / 3.0);
 
      // 判断正面还是反面

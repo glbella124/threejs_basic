@@ -15,6 +15,8 @@ import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader";
 
 // 特定形状的星系 -- 臂旋星系
 
+//创建gui对象
+// const gui = new dat.GUI();
 const scene = new THREE.Scene();
 
 // 更改参数值允许只看到下降
@@ -29,7 +31,7 @@ const camera = new THREE.PerspectiveCamera(
 const textureLoader = new THREE.TextureLoader();
 const particlesTexture = textureLoader.load("./textures/particles/1.png");
 
-camera.position.set(0, 0, 10);
+camera.position.set(0, 4, 4);
 scene.add(camera);
 
 // 随机生成一条直线
@@ -150,9 +152,11 @@ document.body.appendChild(renderer.domElement);
 
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
+controls.autoRotate = true;
+controls.autoRotateSpeed = 0.9;
 
-const axesHelper = new THREE.AxesHelper(5);
-scene.add(axesHelper);
+// const axesHelper = new THREE.AxesHelper(5);
+// scene.add(axesHelper);
 const clock = new THREE.Clock();
 
 // 动画循环
