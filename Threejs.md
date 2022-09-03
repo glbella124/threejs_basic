@@ -224,3 +224,25 @@ Webgl的渲染依赖底层GPU的渲染能力，所以WEBGL渲染流程和GPU内�
 shader效果：
 
 https://www.shadertoy.com/
+
+## 10. 环境纹理
+
+```javascript
+//13_extendedMaterial
+// 添加环境纹理
+const cubeTextureLoader = new THREE.CubeTextureLoader();
+const envMapTexture = cubeTextureLoader.load([
+  "textures/environmentMaps/0/px.jpg",
+  "textures/environmentMaps/0/nx.jpg",
+  "textures/environmentMaps/0/py.jpg",
+  "textures/environmentMaps/0/ny.jpg",
+  "textures/environmentMaps/0/pz.jpg",
+  "textures/environmentMaps/0/nz.jpg",
+]);
+
+scene.environment = envMapTexture;
+scene.background = envMapTexture;
+
+
+```
+
