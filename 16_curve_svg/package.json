@@ -1,0 +1,16 @@
+{
+  "name": "16_curve_svg",
+  "version": "1.0.0",
+  "description": "css render",
+  "main": "index.js",
+  "scripts": {
+    "dev": "parcel src/index.html",
+    "build": "parcel build src/index.html"
+  },
+  "author": "Bella",
+  "license": "ISC",
+  "dependencies": {
+    "parcel-bundler": "^1.12.5",
+    "three": "^0.144.0"
+  }
+}
