@@ -41314,9 +41314,9 @@ function init() {
   lightObject.directionLight.position.set(0, 0, 1);
   renderObj.scene.add(lightObject.directionLight);
   lightObject.light = new THREE.AmbientLight(0xffffff, 0.5);
-  renderObj.scene.add(lightObject.light);
-  var axesHelper = new THREE.AxesHelper(5);
-  renderObj.scene.add(axesHelper); //  create earth
+  renderObj.scene.add(lightObject.light); // const axesHelper = new THREE.AxesHelper(5);
+  // renderObj.scene.add(axesHelper);
+  //  create earth
 
   earthObj.geometry = new THREE.SphereGeometry(earthObj.radius, 16, 16);
   earthObj.material = new THREE.MeshPhongMaterial({
@@ -41337,30 +41337,30 @@ function init() {
   });
   moonObj.moon = new THREE.Mesh(moonObj.geometry, moonObj.material);
   renderObj.scene.add(moonObj.moon); //   add label for earth, moon, china
-
-  renderObj.earthDiv = document.createElement("div");
-  renderObj.earthDiv.className = "label";
-  renderObj.earthDiv.innerHTML = "Earth";
-  renderObj.earthLabel = new _CSS2DRenderer.CSS2DObject(renderObj.earthDiv);
-  renderObj.earthLabel.position.set(0, 1, 0);
-  earthObj.earth.add(renderObj.earthLabel);
-  renderObj.chinaDiv = document.createElement("div");
-  renderObj.chinaDiv.className = "label1";
-  renderObj.chinaDiv.innerHTML = "China";
-  renderObj.chinaLabel = new _CSS2DRenderer.CSS2DObject(renderObj.chinaDiv);
-  renderObj.chinaLabel.position.set(-0.3, 0.5, -0.9);
-  earthObj.earth.add(renderObj.chinaLabel);
-  renderObj.moonDiv = document.createElement("div");
-  renderObj.moonDiv.className = "label";
-  renderObj.moonDiv.innerHTML = "Moon";
-  renderObj.moonLabel = new _CSS2DRenderer.CSS2DObject(renderObj.moonDiv);
-  renderObj.moonLabel.position.set(0, 0.3, 0);
-  moonObj.moon.add(renderObj.moonLabel); // create curve based on a series of points
+  // renderObj.earthDiv = document.createElement("div");
+  // renderObj.earthDiv.className = "label";
+  // renderObj.earthDiv.innerHTML = "Earth";
+  // renderObj.earthLabel = new CSS2DObject(renderObj.earthDiv);
+  // renderObj.earthLabel.position.set(0, 1, 0);
+  // earthObj.earth.add(renderObj.earthLabel);
+  // renderObj.chinaDiv = document.createElement("div");
+  // renderObj.chinaDiv.className = "label1";
+  // renderObj.chinaDiv.innerHTML = "China";
+  // renderObj.chinaLabel = new CSS2DObject(renderObj.chinaDiv);
+  // renderObj.chinaLabel.position.set(-0.3, 0.5, -0.9);
+  // earthObj.earth.add(renderObj.chinaLabel);
+  // renderObj.moonDiv = document.createElement("div");
+  // renderObj.moonDiv.className = "label";
+  // renderObj.moonDiv.innerHTML = "Moon";
+  // renderObj.moonLabel = new CSS2DObject(renderObj.moonDiv);
+  // renderObj.moonLabel.position.set(0, 0.3, 0);
+  // moonObj.moon.add(renderObj.moonLabel);
+  // create curve based on a series of points
   // 使用Catmull-Rom算法， 从一系列的点创建一条平滑的三维样条曲线。
 
   curve = new THREE.CatmullRomCurve3([new THREE.Vector3(-10, 0, 10), new THREE.Vector3(-5, 5, 5), new THREE.Vector3(0, 0, 5), new THREE.Vector3(5, -5, 5), new THREE.Vector3(10, 0, 10)], true); // 在曲线里，getPoints获取51个点
 
-  var points = curve.getPoints(500);
+  var points = curve.getPoints(50);
   console.log(points);
   var geometry = new THREE.BufferGeometry().setFromPoints(points);
   var material = new THREE.LineBasicMaterial({
@@ -41369,21 +41369,21 @@ function init() {
 
   var curveObject = new THREE.Line(geometry, material);
   renderObj.scene.add(curveObject); //实例化css 2d的渲染器
+  // renderObj.labelRenderer = new CSS2DRenderer();
+  // renderObj.labelRenderer.setSize(window.innerWidth, window.innerHeight);
+  // document.body.appendChild(renderObj.labelRenderer.domElement);
+  // renderObj.labelRenderer.domElement.style.position = "fixed";
+  // renderObj.labelRenderer.domElement.style.top = "0px";
+  // renderObj.labelRenderer.domElement.style.left = "0px";
+  // renderObj.labelRenderer.domElement.style.zIndex = "10";
 
-  renderObj.labelRenderer = new _CSS2DRenderer.CSS2DRenderer();
-  renderObj.labelRenderer.setSize(window.innerWidth, window.innerHeight);
-  document.body.appendChild(renderObj.labelRenderer.domElement);
-  renderObj.labelRenderer.domElement.style.position = "fixed";
-  renderObj.labelRenderer.domElement.style.top = "0px";
-  renderObj.labelRenderer.domElement.style.left = "0px";
-  renderObj.labelRenderer.domElement.style.zIndex = "10";
   renderObj.renderer = new THREE.WebGLRenderer();
   renderObj.renderer.setPixelRatio(window.devicePixelRatio);
   renderObj.renderer.setSize(window.innerWidth, window.innerHeight);
   document.body.appendChild(renderObj.renderer.domElement);
-  var controls = new _OrbitControls.OrbitControls(renderObj.camera, renderObj.labelRenderer.domElement);
-  controls.minDistance = 5;
-  controls.maxDistance = 100;
+  var controls = new _OrbitControls.OrbitControls(renderObj.camera, renderObj.renderer.domElement); // controls.minDistance = 5;
+  // controls.maxDistance = 100;
+
   window.addEventListener("resize", onWindowResize);
 }
 
@@ -41397,38 +41397,12 @@ function onWindowResize() {
 function animate() {
   requestAnimationFrame(animate);
   var elapsed = clock.getElapsedTime();
-  moonObj.moon.position.set(Math.sin(elapsed) * 5, 0, Math.cos(elapsed) * 5); // 克隆china标签位置 -- 避免位置错误
+  var time = elapsed / 10 % 1;
+  var point = curve.getPoint(time); // vector3 copy() -- 将所传入的vector3的x,y,z属性复制给vector3
 
-  var chinaPosition = renderObj.chinaLabel.position.clone(); // 计算出标签跟摄像机的距离
-
-  var labelDistance = chinaPosition.distanceTo(renderObj.camera.position); // 检测射线的碰撞
-  // project -- 将此向量从世界空间投影到相机的标准化设备坐标(NDC)空间
-
-  chinaPosition.project(renderObj.camera);
-  raycaster.setFromCamera(chinaPosition, renderObj.camera);
-  var intersects = raycaster.intersectObjects(renderObj.scene.children, true); // 需要考虑的情况： 检测到有物体，没有物体，div标签
-  // 没有碰撞到任何物体,让标签显示
-
-  if (intersects.length === 0) {
-    renderObj.chinaLabel.element.classList.add("visible");
-  } else {
-    // 碰撞物体距离
-    // intersects里第一个是距离最近的
-    var minDistance = intersects[0].distance; // console.log(minDistance, labelDistance);
-
-    if (minDistance < labelDistance) {
-      // 物体遮挡时隐藏标签
-      renderObj.chinaLabel.element.classList.remove("visible");
-    } else {
-      //显示物体标签
-      renderObj.chinaLabel.element.classList.add("visible");
-    }
-  } // 碰撞到以后,先找物体最近的距离
-  // 球比标签距离近,球挡住了标签
-  //   标签渲染器渲染
-
-
-  renderObj.labelRenderer.render(renderObj.scene, renderObj.camera);
+  moonObj.moon.position.copy(point);
+  renderObj.camera.position.copy(point);
+  renderObj.camera.lookAt(earthObj.earth.position);
   renderObj.renderer.render(renderObj.scene, renderObj.camera);
 }
 },{"three":"../node_modules/three/build/three.module.js","three/examples/jsm/controls/OrbitControls":"../node_modules/three/examples/jsm/controls/OrbitControls.js","three/examples/jsm/renderers/CSS2DRenderer.js":"../node_modules/three/examples/jsm/renderers/CSS2DRenderer.js"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
@@ -41459,7 +41433,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "62540" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63973" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
