@@ -246,3 +246,24 @@ scene.background = envMapTexture;
 
 ```
 
+## 11. 智慧城市
+
+vue项目，
+
+```linux
+// three 库
+npm install --save three
+// webpack glsl支持
+npm i webpack-glsl-loader --save-dev
+// 应用图形用户界面更改变量 - GUI库
+npm install --save dat.gui
+// GSAP 组件动画
+npm install gsap
+
+```
+
+城市模型：
+
+https://wiki.openstreetmap.org/wiki/Main_Page
+
+https://cadmapper.com/
