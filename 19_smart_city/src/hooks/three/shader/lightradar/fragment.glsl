@@ -1,8 +1,25 @@
 // 定义位置变量方便传给片元着色器
 varying vec3 vPosition;
-uniform float uHeight;
+varying vec2 vUv;
+uniform vec3 uColor;
+uniform float uTime;
+
+// 旋转矩阵
+mat2 rotate2d(float _angle){
+    return mat2(cos(_angle),-sin(_angle),
+                sin(_angle),cos(_angle));
+}
+
+
 void main() {
-    // 设置混合的百分比
-    float gradMix = (vPosition.y + uHeight/2.0)/uHeight;
-    gl_FragColor = vec4(1,1,0,1.0-gradMix);
+    // 围绕中心点旋转
+    vec2 newUv = rotate2d(uTime*6.28) * (vUv-0.5);
+    // 再次回到0--1
+    newUv += 0.5;
+    // 小于0.5 = 0;大于0.5=1
+    float alpha =  1.0 - step(0.5,distance(newUv,vec2(0.5)));
+    
+    float angle = atan(newUv.x-0.5,newUv.y-0.5);
+    float strength = (angle+3.14)/6.28;
+    gl_FragColor =vec4(uColor,alpha*strength);
 }

@@ -36,9 +36,9 @@ export function addGradColor(shader: any, mesh: any) {
 
   // console.log(shader.vertexShader);
   // console.log(shader.fragmentShader);
-  // 深紫色渐变到淡紫色
+  // 蓝色
   shader.uniforms.uTopColor = {
-    value: new THREE.Color("#E0B0FF"),
+    value: new THREE.Color("#82CAFA"),
   };
   shader.uniforms.uHeight = {
     value: uHeight,
@@ -74,14 +74,13 @@ export function addGradColor(shader: any, mesh: any) {
   shader.fragmentShader = shader.fragmentShader.replace(
     `// #end#`,
     `
-        #include <dithering_fragment>
-        vec4 distGradColor = gl_FragColor;
-  
-        // 设置混合的百分比 -- 保证是正值
-        float gradMix = (vPosition.y + uHeight/2.0)/uHeight;
-        // 计算出混合颜色
-        vec3 gradMixColor = mix(distGradColor.xyz,uTopColor,gradMix);
-        gl_FragColor = vec4(gradMixColor,1);
+    vec4 distGradColor = gl_FragColor;
+
+    // 设置混合的百分比
+    float gradMix = (vPosition.y+uHeight/2.0)/uHeight;
+    // 计算出混合颜色
+    vec3 gradMixColor = mix(distGradColor.xyz,uTopColor,gradMix);
+    gl_FragColor = vec4(gradMixColor,1);
         // #end#
         `
   );

@@ -3,7 +3,7 @@ import * as THREE from "three";
 const renderer = new THREE.WebGLRenderer({
   // 抗锯齿
   antialias: true,
-  alpha: true
+  // alpha: true
   // logarithmicDepthBuffer: true,
 });
 // 设置渲染尺寸大小

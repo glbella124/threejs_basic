@@ -12,11 +12,12 @@ export default class FlyLineShader {
   geometry: any;
   shaderMaterial: any;
   mesh: any;
-  constructor(/* position={x:0,z:0},color=0x00ffff */) {
+  // eventListIndex:any=0
+  constructor(position = { x: 0, z: 0 }, color: any = 0x00ffff) {
     let linePoints = [
       new THREE.Vector3(0, 0, 0),
-      new THREE.Vector3(-5, 4, 0),
-      new THREE.Vector3(-8, 0, 0),
+      new THREE.Vector3(position.x / 2, 4, position.z / 2),
+      new THREE.Vector3(position.x / 2, 0, position.z / 2),
     ];
     // 1 -- 根据提供的点生成曲线
     this.lineCurve = new THREE.CatmullRomCurve3(linePoints);
@@ -42,7 +43,7 @@ export default class FlyLineShader {
           value: 0,
         },
         uColor: {
-          value: new THREE.Color(0x0000ff),
+          value: new THREE.Color(color),
         },
         uLength: {
           value: points.length,
@@ -52,7 +53,7 @@ export default class FlyLineShader {
       fragmentShader: fragment,
       transparent: true,
       depthWrite: false,
-      // blending: THREE.AdditiveBlending,
+      blending: THREE.AdditiveBlending,
     });
     this.mesh = new THREE.Points(this.geometry, this.shaderMaterial);
 
@@ -63,5 +64,11 @@ export default class FlyLineShader {
       repeat: -1,
       ease: "none",
     });
+  }
+  remove() {
+    this.mesh.remove();
+    this.mesh.removeFromParent();
+    this.mesh.geometry.dispose();
+    this.mesh.material.dispose();
   }
 }
