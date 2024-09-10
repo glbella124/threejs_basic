@@ -267,3 +267,6 @@ npm install gsap
 https://wiki.openstreetmap.org/wiki/Main_Page
 
 https://cadmapper.com/
+
+## 结合vue开发
+npm init vite@latest
